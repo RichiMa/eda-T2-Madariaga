@@ -30,3 +30,6 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
 elseif(MSVC)
   target_compile_options(poscodes PRIVATE /O2 /W3)
 endif()
+
+add_executable(test test.cpp src/utils.cpp src/poscode.cpp)
+target_include_directories(test PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
