@@ -6,7 +6,6 @@
 #include <iostream>
 #include <vector>
 
-// ----------- I/O -----------
 Poscode *readCodes(const std::string &strfile, std::size_t n){
     auto *codes = new Poscode[n];
 
@@ -36,17 +35,15 @@ void deleteCodes(Poscode *codes){
     if (codes != nullptr) delete[] codes; // importante: delete[]
 }
 
-// ----------- comparador -----------
 static inline bool less_code(const Poscode &a, const Poscode &b){
     return a.getData() < b.getData(); // compara string completo ddddLL
 }
 
-// ----------- helpers counting sort -----------
-static inline int map_digit(char c){ return static_cast<int>(c - '0'); }          // 0..9
+static inline int map_digit(char c){ return static_cast<int>(c - '0'); }         
 static inline int map_letter(char c){
     unsigned char uc = static_cast<unsigned char>(c);
     char u = static_cast<char>(std::toupper(uc));
-    return static_cast<int>(u - 'A'); // 0..25
+    return static_cast<int>(u - 'A'); 
 }
 
 static void counting_by_digit(const Poscode *in, Poscode *out,
@@ -75,22 +72,20 @@ static void counting_by_letter(const Poscode *in, Poscode *out,
     }
 }
 
-// ----------- Radix LSD: 6 pasadas (5,4 letras; 3..0 dígitos) -----------
 void radix_sort(Poscode *A, std::size_t n){
     if (n <= 1) return;
     Poscode *B = new Poscode[n];
 
-    counting_by_letter(A, B, n, 5); // A -> B
-    counting_by_letter(B, A, n, 4); // B -> A
-    counting_by_digit  (A, B, n, 3); // A -> B
-    counting_by_digit  (B, A, n, 2); // B -> A
-    counting_by_digit  (A, B, n, 1); // A -> B
-    counting_by_digit  (B, A, n, 0); // B -> A (orden final en A)
+    counting_by_letter(A, B, n, 5); 
+    counting_by_letter(B, A, n, 4); 
+    counting_by_digit  (A, B, n, 3); 
+    counting_by_digit  (B, A, n, 2); 
+    counting_by_digit  (A, B, n, 1); 
+    counting_by_digit  (B, A, n, 0); 
 
     delete[] B;
 }
 
-// ----------- Merge sort (top-down) -----------
 static void merge_rec(Poscode *A, Poscode *aux, std::size_t l, std::size_t r){
     if (r - l <= 1) return;
     std::size_t m = l + (r - l) / 2;
@@ -113,7 +108,6 @@ void merge_sort(Poscode *A, std::size_t n){
     merge_rec(A, aux.data(), 0, n);
 }
 
-// ----------- Quick sort (mediana-de-tres + 3-way) -----------
 static inline void iswap(Poscode &a, Poscode &b){ std::swap(a, b); }
 
 static void quick_3way(Poscode *A, long l, long r){

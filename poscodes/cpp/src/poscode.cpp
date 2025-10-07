@@ -1,5 +1,5 @@
 #include "poscode.hpp"
-#include <utility>  // std::move
+#include <utility> 
 
 Poscode::Poscode() : data("") {}
 Poscode::Poscode(std::string _data) : data(std::move(_data)) {}

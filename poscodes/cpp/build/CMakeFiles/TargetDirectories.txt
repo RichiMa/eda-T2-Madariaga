@@ -1,3 +1,4 @@
-/home/jmsaavedrar/Research/git/eda_cpp_full/poscodes/cpp/build/CMakeFiles/test.dir
-/home/jmsaavedrar/Research/git/eda_cpp_full/poscodes/cpp/build/CMakeFiles/edit_cache.dir
-/home/jmsaavedrar/Research/git/eda_cpp_full/poscodes/cpp/build/CMakeFiles/rebuild_cache.dir
+/home/eda/eda-T2-Madariaga/poscodes/cpp/build/CMakeFiles/poscodes.dir
+/home/eda/eda-T2-Madariaga/poscodes/cpp/build/CMakeFiles/test.dir
+/home/eda/eda-T2-Madariaga/poscodes/cpp/build/CMakeFiles/edit_cache.dir
+/home/eda/eda-T2-Madariaga/poscodes/cpp/build/CMakeFiles/rebuild_cache.dir

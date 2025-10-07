@@ -4,37 +4,57 @@
 #include <chrono>
 #include <cstring>
 #include <iostream>
+#include <fstream>
 #include <string>
 
-static bool is_sorted(const Poscode* A, std::size_t n){
-    for (std::size_t i = 1; i < n; ++i)
+static bool is_sorted(const Poscode* A, size_t n){
+    for (size_t i = 1; i < n; ++i)
         if (A[i-1].getData() > A[i].getData()) return false;
     return true;
 }
 
+static void usage(const char* prog){
+    std::cout << "Uso: " << prog
+              << " --algo=radix|merge|quick --file=PATH --n=N [--print=K]\n";
+}
+
 int main(int argc, char** argv){
     std::string algo = "radix";
-    std::string file = "../codes_500K.txt"; // desde build/, subir un nivel
-    std::size_t n = 500000;
+    std::string file = "../../codes_500K.txt"; 
+    size_t n = 500000;
     int toprint = 10;
 
-    for (int i = 1; i < argc; ++i){
-        if (!std::strncmp(argv[i], "--algo=", 8))       algo = std::string(argv[i] + 8);
-        else if (!std::strncmp(argv[i], "--file=", 8))   file = std::string(argv[i] + 8);
-        else if (!std::strncmp(argv[i], "--n=", 5))      n = static_cast<std::size_t>(std::stoull(argv[i] + 4));
-        else if (!std::strncmp(argv[i], "--print=", 9))  toprint = std::stoi(argv[i] + 9);
-        else {
-            std::cout << "Uso: " << argv[0]
-                      << " --algo=radix|merge|quick --file=PATH --n=N [--print=K]\n";
-            return 0;
+    auto take_value = [&](const std::string& key, int& i, std::string& out)->bool{
+        std::string arg(argv[i]);
+        if (arg.compare(0, key.size(), key) != 0) return false;
+        if (arg.size() > key.size() && arg[key.size()] == '=') {
+            out = arg.substr(key.size() + 1);
+            return true;
         }
+        if (i + 1 < argc) { out = argv[++i]; return true; }
+        return false;
+    };
+
+    for (int i = 1; i < argc; ++i){
+        std::string val;
+        if (take_value("--algo",  i, val)) { algo   = val; continue; }
+        if (take_value("--file",  i, val)) { file   = val; continue; }
+        if (take_value("--n",     i, val)) { n      = static_cast<size_t>(std::stoull(val)); continue; }
+        if (take_value("--print", i, val)) { toprint = std::stoi(val); continue; }
+
+        std::cerr << "Argumento no reconocido: " << argv[i] << "\n";
+        usage(argv[0]);
+        return 1;
     }
 
     Poscode* data = readCodes(file, n);
-    if (!data) return 1;
+    if (!data){
+        std::cerr << "Error leyendo archivo: " << file << "\n";
+        return 1;
+    }
 
     auto t0 = std::chrono::high_resolution_clock::now();
-    if (algo == "radix")      radix_sort(data, n);
+    if      (algo == "radix") radix_sort(data, n);
     else if (algo == "merge") merge_sort(data, n);
     else if (algo == "quick") quick_sort(data, n);
     else {
@@ -45,6 +65,7 @@ int main(int argc, char** argv){
     auto t1 = std::chrono::high_resolution_clock::now();
 
     std::chrono::duration<double> dt = t1 - t0;
+    std::cout.setf(std::ios::fixed); std::cout.precision(6);
     std::cout << "Algo=" << algo << " n=" << n << " time=" << dt.count() << " s\n";
     std::cout << "Sorted? " << (is_sorted(data, n) ? "YES" : "NO") << "\n";
 
